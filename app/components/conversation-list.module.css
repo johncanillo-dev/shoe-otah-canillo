@@ -1,0 +1,105 @@
+.conversationListContainer {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  padding: 1rem;
+  background: var(--accent);
+  color: white;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.emptyState {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #999;
+  font-size: 0.95rem;
+}
+
+.conversationsList {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.conversationItem {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.conversationItem:hover {
+  background: #f9f9f9;
+}
+
+.conversationItem:last-child {
+  border-bottom: none;
+}
+
+.conversationInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversationInfo h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.preview {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unreadBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Scrollbar styling */
+.conversationsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversationsList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.conversationsList::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 3px;
+}
+
+.conversationsList::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

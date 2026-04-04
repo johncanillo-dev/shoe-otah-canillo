@@ -1,0 +1,368 @@
+.dashboardContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--line);
+}
+
+.header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.shopName {
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0;
+}
+
+.header button {
+  height: fit-content;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.statCard h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5e584d;
+}
+
+.statNumber {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.tabNav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 0;
+}
+
+.tabNav button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #5e584d;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.tabNav button:hover {
+  color: var(--ink);
+}
+
+.tabNav button.tabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.content {
+  margin-top: 2rem;
+}
+
+.analyticsSection {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.analyticsSection h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.analyticsCard {
+  background: #faf8f3;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.analyticsCard h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.productsSection {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid var(--line);
+}
+
+.ordersSection {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid var(--line);
+}
+
+.ordersSection h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+}
+
+.ordersTable {
+  overflow-x: auto;
+}
+
+.ordersTable table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.8rem;
+}
+
+.ordersTable th,
+.ordersTable td {
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  padding: 0.75rem;
+}
+
+.ordersTable th {
+  background: #faf8f3;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ordersTable tr:hover {
+  background: #faf8f3;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.productForm {
+  background: #faf8f3;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.productForm input,
+.productForm select,
+.productForm textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.productForm input:focus,
+.productForm select:focus,
+.productForm textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(239, 91, 42, 0.1);
+}
+
+.productForm button {
+  align-self: flex-start;
+}
+
+.productsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.productCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.productCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.productImage {
+  width: 100%;
+  height: 200px;
+  background: #faf8f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.productInfo {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.productInfo h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+}
+
+.category {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #5e584d;
+  margin: 0.75rem 0;
+  line-height: 1.4;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 1rem 0 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+  background: #faf8f3;
+}
+
+.actions button {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #5e584d;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabNav {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .tabNav button {
+    flex: 1;
+    border-bottom: none;
+    border-right: 1px solid var(--line);
+    margin-bottom: 0;
+    padding-bottom: 0.75rem;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .sectionHeader button {
+    width: 100%;
+  }
+
+  .productsList {
+    grid-template-columns: 1fr;
+  }
+
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ordersTable {
+    font-size: 0.9rem;
+  }
+
+  .ordersTable th,
+  .ordersTable td {
+    padding: 0.5rem;
+  }
+}
