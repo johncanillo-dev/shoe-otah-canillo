@@ -36,7 +36,7 @@ export default function OrderConfirmationPage() {
   }
 
   const paymentMethodLabel = {
-    cash: "Cash on Delivery",
+    cod: "Cash on Delivery",
     gcash: "GCash",
     paymaya: "PayMaya",
     bankTransfer: "Bank Transfer",
