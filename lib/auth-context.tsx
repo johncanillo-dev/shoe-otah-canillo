@@ -205,7 +205,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error("Supabase insert error:", error);
-        return { success: false, error: "Failed to register. Please try again." };
+        console.error("Error details:", JSON.stringify(error, null, 2));
+        
+        // Provide specific error messages based on error code
+        if (error.code === "PGRST116") {
+          return { success: false, error: "Users table not found. Please contact support." };
+        }
+        if (error.code === "42501") {
+          return { success: false, error: "Permission denied. RLS policy may need adjustment." };
+        }
+        if (error.code === "23505") {
+          return { success: false, error: "Email already exists in database." };
+        }
+        
+        return { success: false, error: `Registration failed: ${error.message || "Please try again."}` };
       }
 
       // Set local user session
