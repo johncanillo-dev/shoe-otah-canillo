@@ -7,18 +7,25 @@ import { useRouter } from "next/navigation";
 import AdminContent from "./admin-content";
 
 export default function AdminPage() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // Check if user is admin
-    if (!isAdmin) {
+    // Check if user is admin - must be both logged in as admin
+    if (!isAdmin || !user) {
       router.push("/login");
       return;
     }
+    
+    // Extra validation: user email should match admin email
+    if (user.email !== "admin@shoe-otah.com") {
+      router.push("/login");
+      return;
+    }
+    
     setIsAuthorized(true);
-  }, [isAdmin, router]);
+  }, [isAdmin, user, router]);
 
   if (!isAuthorized) {
     return (

@@ -15,10 +15,13 @@ export default function DashboardPage() {
       router.push("/login");
       return;
     }
+    
+    // Strictly prevent admins from accessing customer dashboard
     if (isAdmin) {
-      router.push("/admin");  // Redirect admins to admin dashboard
+      router.push("/admin");
       return;
     }
+    
     setIsAuthorized(true);
   }, [isAdmin, isLoggedIn, router]);
 

@@ -28,7 +28,7 @@ export default function LoginPage() {
     const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
 
-    const result = login(email, password);
+    const result = await login(email, password);
     if (result.success) {
       setStatus("Login successful. Redirecting to shop...");
       setTimeout(() => {
@@ -55,7 +55,7 @@ export default function LoginPage() {
       return;
     }
 
-    const result = adminLogin(email, password);
+    const result = await adminLogin(email, password);
     if (result.success) {
       setStatus("Admin login successful. Redirecting to admin panel...");
       setTimeout(() => {
@@ -85,7 +85,7 @@ export default function LoginPage() {
       return;
     }
 
-    if (sellerLogin(email, password, name, shopName, city)) {
+    if (await sellerLogin(email, password, name, shopName, city)) {
       setStatus("Seller login successful. Redirecting to seller dashboard...");
       setTimeout(() => {
         router.push("/seller");

@@ -20,12 +20,12 @@ function HeaderContent() {
           {/* Seller Navigation */}
           <Link href="/">Shop</Link>
           <Link href="/seller" style={{ fontWeight: "600", color: "var(--accent)" }}>
-            ?? Seller Dashboard
+            👤 Seller Dashboard
           </Link>
 
           {/* Seller Account Section */}
           <span className="user-info" style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
-            ?? {seller.name}
+            👤 {seller.name}
             <button
               onClick={() => {
                 sellerLogout();
@@ -51,12 +51,12 @@ function HeaderContent() {
           <Link href="/">Shop</Link>
           <Link href="/cart">Cart</Link>
           <Link href="/dashboard" style={{ fontWeight: "600", color: "var(--accent)" }}>
-            ?? My Dashboard
+            📊 My Dashboard
           </Link>
 
           {/* User Account Section */}
           <span className="user-info" style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
-            ?? Welcome, {user?.name}!
+            👋 Welcome, {user?.name}!
             <button
               onClick={logout}
               className="btn-logout"
@@ -99,8 +99,13 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
           borderBottom: "1px solid var(--border-color)",
         }}
       >
-        <div style={{ fontWeight: "bold", fontSize: "1.5rem", color: "var(--accent)" }}>
-          ?? Shoe OTah
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontWeight: "bold", fontSize: "1.5rem", color: "var(--accent)" }}>
+          <img 
+            src="/shoe-otah-logo.png" 
+            alt="Shoe Otah Boutique Logo"
+            style={{ width: "45px", height: "45px" }}
+          />
+          Shoe Otah Boutique
         </div>
         <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
           <HeaderContent />

@@ -43,11 +43,18 @@ export default function AdminContent() {
   );
 
   useEffect(() => {
-    if (!isAdmin) {
-      router.push("/login?tab=admin");
-    } else {
-      setIsLoading(false);
+    if (!isAdmin || !user) {
+      router.push("/login");
+      return;
     }
+    
+    // Validate admin email
+    if (user.email !== "admin@shoe-otah.com") {
+      router.push("/login");
+      return;
+    }
+    
+    setIsLoading(false);
     
     // Load shop location from localStorage
     const savedLocation = localStorage.getItem("shop-location");

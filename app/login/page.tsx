@@ -98,6 +98,33 @@ export default function LoginPage() {
                 <span>Fast Delivery</span>
               </div>
             </div>
+
+            {/* Facebook Link */}
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+              <a 
+                href="https://www.facebook.com/Chyxzykiss/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 20px",
+                  backgroundColor: "#1877F2",
+                  color: "white",
+                  borderRadius: "6px",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  transition: "background-color 0.3s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#165FD8"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#1877F2"}
+              >
+                <span>📱</span>
+                Follow us on Facebook
+              </a>
+            </div>
           </div>
         </div>
 
@@ -105,7 +132,14 @@ export default function LoginPage() {
         <div className="auth-form-side">
           <div className="auth-form-container">
             <div className="auth-header">
-              <h2 className="auth-title">Welcome Back</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "center" }}>
+                <img 
+                  src="/shoe-otah-logo.png" 
+                  alt="SHOE-OTAH Logo"
+                  style={{ width: "40px", height: "40px" }}
+                />
+                <h2 className="auth-title">Welcome Back</h2>
+              </div>
               <p className="auth-subtitle">Sign in to your account</p>
             </div>
 

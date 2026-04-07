@@ -116,11 +116,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (storedUser) {
         try {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          
+          // Only set isAdmin if BOTH the user exists AND the admin flag is explicitly true
+          // AND the user email matches admin email
+          if (isAdminStored === "true" && parsedUser.email === ADMIN_EMAIL) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+            // Clean up any stray admin flags for non-admin users
+            if (isAdminStored === "true" && parsedUser.email !== ADMIN_EMAIL) {
+              localStorage.removeItem(ADMIN_KEY);
+            }
+          }
         } catch (e) {
           console.error("Failed to parse stored user:", e);
           localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(ADMIN_KEY);
+          setIsAdmin(false);
         }
+      } else {
+        setIsAdmin(false);
+        localStorage.removeItem(ADMIN_KEY);
       }
 
       if (storedAllUsers) {
@@ -129,10 +147,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (e) {
           console.error("Failed to parse all users:", e);
         }
-      }
-
-      if (isAdminStored === "true") {
-        setIsAdmin(true);
       }
 
       // Try to load from Supabase
@@ -171,58 +185,91 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      // Check if email already exists in Supabase
-      const { data: existingUser, error: queryError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("email", email.toLowerCase())
-        .single();
+      // Try to register via API first
+      try {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name, city }),
+        });
 
-      if (queryError && queryError.code !== "PGRST116") {
-        console.error("Query error:", queryError);
+        if (response.ok) {
+          const result = await response.json();
+
+          if (result.success) {
+            // Set local user session
+            const userData: User = {
+              id: result.user.id,
+              email: result.user.email,
+              name: result.user.name,
+              city: result.user.city,
+              createdAt: new Date().toISOString(),
+              isActive: true,
+            };
+
+            setUser(userData);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+            localStorage.setItem(SESSION_TOKEN_KEY, result.user.id);
+            setIsAdmin(false);  // New users are not admins
+            localStorage.removeItem(ADMIN_KEY);  // Remove any admin flag
+
+            // Update local allUsers list for fallback
+            const updated = [...allUsers, userData];
+            setAllUsers(updated);
+            localStorage.setItem(ALL_USERS_KEY, JSON.stringify(updated));
+
+            return { success: true };
+          }
+        }
+      } catch (apiError) {
+        console.warn("API registration failed, using localStorage fallback:", apiError);
       }
 
-      if (existingUser) {
+      // Fallback: Register locally if API fails
+      console.log("Using localStorage fallback for registration");
+
+      // Check local users first
+      const localUsers = JSON.parse(localStorage.getItem(ALL_USERS_KEY) || "[]");
+      const emailExists = localUsers.some(
+        (u: User) => u.email.toLowerCase() === email.toLowerCase()
+      );
+
+      if (emailExists) {
         return { success: false, error: "Email already registered" };
       }
 
       // Hash password
-      const hashedPassword = simpleHash(password + email); // Add salt with email
+      const hashedPassword = simpleHash(password + email);
 
-      // Create new user in Supabase
-      const newUserId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
-      const { data, error } = await supabase.from("users").insert([
-        {
-          id: newUserId,
-          email: email.toLowerCase(),
-          password: hashedPassword,
-          name,
-          city: city || null,
-          createdAt: new Date().toISOString(),
-          isActive: true,
-        },
-      ]);
+      // Create new user locally
+      const newUserId = crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now().toString();
 
-      if (error) {
-        console.error("Supabase insert error:", error);
-        return { success: false, error: "Failed to register. Please try again." };
-      }
-
-      // Set local user session
       const userData: User = {
         id: newUserId,
         email: email.toLowerCase(),
         name,
-        city,
+        city: city || undefined,
         createdAt: new Date().toISOString(),
         isActive: true,
       };
 
+      // Save user locally
       setUser(userData);
+      setIsAdmin(false);  // New users are not admins
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
       localStorage.setItem(SESSION_TOKEN_KEY, newUserId);
+      localStorage.removeItem(ADMIN_KEY);  // Remove any admin flag
 
-      // Update local allUsers list for fallback
+      // Store password locally for login
+      const userPasswords = JSON.parse(
+        localStorage.getItem("user_passwords") || "{}"
+      );
+      userPasswords[email.toLowerCase()] = hashedPassword;
+      localStorage.setItem("user_passwords", JSON.stringify(userPasswords));
+
+      // Update local allUsers list
       const updated = [...allUsers, userData];
       setAllUsers(updated);
       localStorage.setItem(ALL_USERS_KEY, JSON.stringify(updated));
@@ -248,26 +295,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      // Query Supabase for user with matching email
-      const { data: foundUser, error: queryError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", email.toLowerCase())
-        .single();
+      // Hash the provided password with same salt
+      const hashedInput = simpleHash(password + email);
 
-      if (queryError && queryError.code !== "PGRST116") {
-        console.error("Query error:", queryError);
+      // Try Supabase first
+      let foundUser = null;
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email.toLowerCase())
+          .single();
+
+        if (data && !error) {
+          foundUser = data;
+        }
+      } catch (error) {
+        console.warn("Supabase query failed, trying local fallback:", error);
+      }
+
+      // Fallback: Check local users
+      if (!foundUser) {
+        const localUsers = JSON.parse(localStorage.getItem(ALL_USERS_KEY) || "[]");
+        const localUser = localUsers.find(
+          (u: User) => u.email.toLowerCase() === email.toLowerCase()
+        );
+
+        if (localUser) {
+          // Check password against stored hash
+          const userPasswords = JSON.parse(
+            localStorage.getItem("user_passwords") || "{}"
+          );
+          const storedHash = userPasswords[email.toLowerCase()];
+
+          if (storedHash === hashedInput) {
+            foundUser = localUser;
+          }
+        }
       }
 
       if (!foundUser) {
         return { success: false, error: "Account not found. Please register first" };
       }
 
-      // Hash the provided password with same salt
-      const hashedInput = simpleHash(password + email);
-
       // Verify password matches
-      if (foundUser.password !== hashedInput) {
+      if (foundUser.password && foundUser.password !== hashedInput) {
         return { success: false, error: "Incorrect password" };
       }
 
@@ -282,8 +354,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
 
       setUser(userData);
+      setIsAdmin(false);  // Ensure regular users are not admins
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
       localStorage.setItem(SESSION_TOKEN_KEY, foundUser.id); // Store session token
+      localStorage.removeItem(ADMIN_KEY);  // Remove admin flag for regular users
 
       // Update local allUsers list for fallback
       const userIndex = allUsers.findIndex((u) => u.id === foundUser.id);
@@ -306,8 +380,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
+    setIsAdmin(false);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(SESSION_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_KEY);
   };
 
   const adminLogin = (email: string, password: string): { success: boolean; error?: string } => {
